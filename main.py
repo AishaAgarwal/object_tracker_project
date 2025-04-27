@@ -16,6 +16,15 @@ def main(video_path):
 
     previous_ids = set()   # <-- added here!
 
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps_input = cap.get(cv2.CAP_PROP_FPS)
+
+    out = cv2.VideoWriter('output.mp4',
+                          cv2.VideoWriter_fourcc(*'mp4v'),
+                          fps_input,
+                          (frame_width, frame_height))
+    
     while cap.isOpened():
         start_time = time.time()
         ret, frame = cap.read()
@@ -49,6 +58,8 @@ def main(video_path):
         end_time = time.time()  # End timing
         fps = 1 / (end_time - start_time)
 
+        out.write(frame)
+        
         # Draw FPS on frame
         cv2.putText(frame, f'FPS: {fps:.2f}', (20, 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
