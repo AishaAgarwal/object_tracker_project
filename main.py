@@ -1,5 +1,5 @@
 # main.py
-
+import time
 import cv2
 from src.detector import Detector
 from src.tracker import Tracker
@@ -17,6 +17,7 @@ def main(video_path):
     previous_ids = set()   # <-- added here!
 
     while cap.isOpened():
+        start_time = time.time()
         ret, frame = cap.read()
         if not ret:
             break
@@ -45,7 +46,12 @@ def main(video_path):
                 print(f"[-] Object Missing: ID {obj}")
 
         previous_ids = current_ids.copy()  # copy for next frame
+        end_time = time.time()  # End timing
+        fps = 1 / (end_time - start_time)
 
+        # Draw FPS on frame
+        cv2.putText(frame, f'FPS: {fps:.2f}', (20, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
         cv2.imshow("Real-Time Detection and Tracking", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
